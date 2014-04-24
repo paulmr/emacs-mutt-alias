@@ -35,13 +35,17 @@
   (cons (match-string 1 str) (match-string 2 str)))
 
 (defun mutt-alias-next ()
-  "Searches for the next alias in the current buffer from point, leaving point at the end of that match. Returns a cons element which matches the alias, or nil if not found"
+  "Searches for the next alias in the current buffer from point,
+leaving point at the end of that match. Returns a cons element
+which matches the alias, or nil if not found"
   (interactive)
   (if (search-forward-regexp mutt-alias-regexp nil t)
 	  (mutt-alias-from-match)))
 
 (defun mutt-alias-read-buffer-to-alist ()
-  "Starting from point, keep search for alias in the current buffer until there are no more. Return an alist representing the aliases found"
+  "Starting from point, keep search for alias in the current
+buffer until there are no more. Return an alist representing the
+aliases found"
   (let (ret alias)
 	(while (setq alias (mutt-alias-next))
 	  (setq ret (cons alias ret)))
