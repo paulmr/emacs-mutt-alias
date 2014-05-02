@@ -80,3 +80,26 @@ to load it from the default file"
   (interactive 
    (list (completing-read "Alias to insert: " (mutt-alias-get-keys))))
   (insert (mutt-alias-lookup key)))
+
+(defun mutt-alias-make-alias-string (alias-name person-name person-email)
+  "Creates a new alias, as a string, and returns that string"
+  (format "alias %s %s <%s>" alias-name person-name person-email))
+
+(defun mutt-alias-add-alias (alias-name person-name person-email write-to-file)
+  "Prompts for attributes for a new alias, and then adds it to
+  the current in-memory alias list. Writes the alias to the
+  default file if required if requested"
+  (interactive
+   (list
+	(read-string "Name for alias: ")
+	(read-string "Person's name: ")
+	(read-string "Person's email address: ")
+	(yes-or-no-p (format "Save to alias file? (%s): " mutt-alias-default-file))
+	))
+  (let ((str (mutt-alias-make-alias-string alias-name person-name person-email))
+		(alist (mutt-alias-get-alist)))
+	(add-to-list 'mutt-alias-alist (mutt-alias-from-string str))
+	(if write-to-file
+		(append-to-file (format "#autoadded %s\n%s\n"
+								(format-time-string "%Y-%m-%d") str) 
+						nil mutt-alias-default-file))))
